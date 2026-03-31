@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soporte Técnico INVT Ibérica</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1rem; }
+  .container { width: 100%; max-width: 500px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.12); display: flex; flex-direction: column; height: 90vh; max-height: 720px; }
+  .header { background: #1F3864; padding: 16px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; background: #2E75B6; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; flex-shrink: 0; }
+  .header-info { flex: 1; }
+  .header-name { color: white; font-size: 15px; font-weight: 600; }
+  .header-sub { color: #BDD7EE; font-size: 12px; margin-top: 2px; }
+  .online-dot { width: 9px; height: 9px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; }
+  .status-bar { background: #f8f9fa; border-bottom: 1px solid #e8e8e8; padding: 6px 16px; font-size: 11px; color: #888; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+  .status-model { font-weight: 500; color: #2E75B6; }
+  .btn-reset { font-size: 11px; color: #aaa; background: none; border: none; cursor: pointer; padding: 2px 6px; border-radius: 8px; }
+  .btn-reset:hover { background: #f0f0f0; color: #666; }
+  .messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: #f0f2f5; }
+  .msg { display: flex; }
+  .msg.user { justify-content: flex-end; }
+  .msg.bot { justify-content: flex-start; }
+  .bubble { padding: 10px 14px; max-width: 82%; font-size: 14px; line-height: 1.55; word-wrap: break-word; }
+  .bubble.user { background: #2E75B6; color: white; border-radius: 16px 2px 16px 16px; }
+  .bubble.bot { background: white; color: #1a1a1a; border-radius: 2px 16px 16px 16px; border: 1px solid #e4e4e4; white-space: pre-wrap; }
+  .bubble.typing { background: white; border: 1px solid #e4e4e4; border-radius: 2px 16px 16px 16px; color: #888; font-style: italic; font-size: 13px; }
+  .quick-btns { padding: 8px 12px; display: flex; gap: 6px; flex-wrap: wrap; background: white; border-top: 1px solid #f0f0f0; flex-shrink: 0; }
+  .quick-btn { font-size: 12px; padding: 5px 11px; background: #f0f4fb; border: 1px solid #d0dff5; border-radius: 20px; cursor: pointer; color: #1F3864; font-weight: 500; }
+  .quick-btn:hover { background: #d0dff5; }
+  .input-area { padding: 12px 16px; border-top: 1px solid #e8e8e8; display: flex; gap: 8px; background: white; flex-shrink: 0; }
+  input[type=text], input[type=password] { flex: 1; padding: 10px 14px; font-size: 14px; border: 1px solid #ddd; border-radius: 24px; outline: none; font-family: inherit; }
+  input[type=text]:focus, input[type=password]:focus { border-color: #2E75B6; }
+  button.send { padding: 10px 20px; background: #1F3864; color: white; border: none; border-radius: 24px; font-size: 14px; cursor: pointer; font-weight: 500; white-space: nowrap; }
+  button.send:hover { background: #2E75B6; }
+  button.send:disabled { background: #aaa; cursor: default; }
+  .footer { text-align: center; padding: 6px; font-size: 11px; color: #aaa; background: white; flex-shrink: 0; }
+  .key-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 32px 24px; gap: 16px; background: #f0f2f5; }
+  .key-screen h2 { font-size: 16px; color: #1F3864; font-weight: 600; text-align: center; }
+  .key-screen p { font-size: 13px; color: #666; text-align: center; line-height: 1.5; }
+  .key-input-row { display: flex; gap: 8px; width: 100%; }
+  .key-input-row input { flex: 1; padding: 10px 14px; font-size: 13px; border: 1px solid #ddd; border-radius: 24px; outline: none; font-family: monospace; }
+  .key-input-row input:focus { border-color: #2E75B6; }
+  .key-input-row button { padding: 10px 18px; background: #1F3864; color: white; border: none; border-radius: 24px; font-size: 13px; cursor: pointer; font-weight: 500; white-space: nowrap; }
+  .key-input-row button:hover { background: #2E75B6; }
+  .key-note { font-size: 11px; color: #999; text-align: center; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="avatar">IN</div>
+    <div class="header-info">
+      <div class="header-name">Soporte Técnico INVT Ibérica</div>
+      <div class="header-sub">GD100 · BPD · SP100</div>
+    </div>
+    <div class="online-dot"></div>
+  </div>
+
+  <div id="keyScreen" class="key-screen">
+    <h2>Introduce tu API Key de OpenAI</h2>
+    <p>La clave se guarda solo en tu navegador y nunca se sube a ningún servidor.</p>
+    <div class="key-input-row">
+      <input type="password" id="keyInput" placeholder="sk-proj-..." />
+      <button onclick="saveKey()">Acceder</button>
+    </div>
+    <p class="key-note">Obtén tu clave en platform.openai.com → API Keys</p>
+  </div>
+
+  <div id="chatScreen" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
+    <div class="status-bar">
+      <span id="statusText">Nueva conversación</span>
+      <button class="btn-reset" onclick="resetChat()">Nueva consulta</button>
+    </div>
+    <div class="messages" id="messages">
+      <div class="msg bot">
+        <div class="bubble bot">Hola 👋 Soy el asistente técnico de INVT Ibérica.
+
+Dime con qué modelo trabajas (GD100, BPD o SP100) y cuéntame tu consulta. Si no sabes el modelo, descríbeme el equipo y te ayudo a identificarlo.</div>
+      </div>
+    </div>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="quickSend('Tengo un BPD con error A-LS')">BPD · A-LS</button>
+      <button class="quick-btn" onclick="quickSend('GD100 error OC1 al arrancar')">GD100 · OC1</button>
+      <button class="quick-btn" onclick="quickSend('BPD bomba monofásica puesta en marcha')">BPD · Monofásica</button>
+      <button class="quick-btn" onclick="quickSend('SP100 no arranca por la mañana')">SP100 · Arranque</button>
+      <button class="quick-btn" onclick="quickSend('Cómo conecto un presostato')">Presostato</button>
+    </div>
+    <div class="input-area">
+      <input type="text" id="msgInput" placeholder="Escribe tu consulta..." />
+      <button class="send" id="sendBtn" onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+
+  <div class="footer">INVT Ibérica · Soporte técnico IA · Uso interno</div>
+</div>
+
+<script>
+const VECTOR_STORE_ID = 'vs_69ca697438448191acc3c055b70760e9';
+const INSTRUCTIONS = 'Eres el asistente tecnico oficial de INVT Iberica, especializado en variadores de frecuencia para bombeo solar, con amplio conocimiento de electricidad, electronica industrial y automatizacion. Trabajas principalmente con los modelos GD100, BPD y SP100. REGLAS: 1) Si el usuario no ha mencionado el modelo del variador y la pregunta es especifica de parametros o configuracion, pregunta primero: cual es tu modelo, GD100, BPD o SP100? Pero si la pregunta es general (electricidad, bombas, sensores, cableado, conceptos tecnicos), responde directamente sin preguntar el modelo. 2) Una vez conoces el modelo, recuerdalo para toda la conversacion. 3) Para preguntas de parametros, usa los documentos y da valores exactos. Para preguntas generales, usa tu conocimiento tecnico amplio. 4) Los codigos de error pueden escribirse con o sin guion: ALS es A-LS, OC1, OV1, PVOV, etc. 5) Puedes responder preguntas sobre electricidad, cableado, bombas, motores, sensores, paneles solares, presostatos, transductores, automatizacion y cualquier tema tecnico relacionado con instalaciones de bombeo. 6) NUNCA menciones ni recomiendes marcas competidoras de variadores (Siemens, ABB, Schneider, Danfoss, WEG, etc.). Si te preguntan por comparativas, habla en terminos generales sin nombrar marcas. 7) Solo deriva a tecnico humano si hay riesgo electrico grave, dano fisico evidente, o si el problema requiere mediciones en campo. 8) Responde siempre en espanol, de forma clara, con pasos numerados cuando sea util y con parametros concretos cuando los conozcas.';
+
+let API_KEY = '';
+let lastResponseId = null;
+let currentModel = null;
+
+function saveKey() {
+  const val = document.getElementById('keyInput').value.trim();
+  if (!val.startsWith('sk-')) { alert('La clave debe empezar por sk-'); return; }
+  API_KEY = val;
+  localStorage.setItem('invt_api_key', val);
+  document.getElementById('keyScreen').style.display = 'none';
+  document.getElementById('chatScreen').style.display = 'flex';
+  document.getElementById('msgInput').focus();
+}
+
+window.onload = function() {
+  const saved = localStorage.getItem('invt_api_key');
+  if (saved && saved.startsWith('sk-')) {
+    API_KEY = saved;
+    document.getElementById('keyScreen').style.display = 'none';
+    document.getElementById('chatScreen').style.display = 'flex';
+  }
+};
+
+document.getElementById('keyInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') saveKey();
+});
+
+function resetChat() {
+  lastResponseId = null;
+  currentModel = null;
+  document.getElementById('statusText').innerHTML = 'Nueva conversación';
+  const box = document.getElementById('messages');
+  box.innerHTML = '';
+  addMsg('Nueva consulta iniciada. Dime con qué modelo trabajas (GD100, BPD o SP100) y cuéntame tu consulta.', 'bot');
+}
+
+function detectModel(text) {
+  const t = text.toUpperCase();
+  if (t.includes('GD100') || t.includes('GD-100') || t.includes('GOODRIVE')) return 'GD100';
+  if (t.includes('BPD')) return 'BPD';
+  if (t.includes('SP100') || t.includes('SP-100')) return 'SP100';
+  return null;
+}
+
+function updateStatus() {
+  const el = document.getElementById('statusText');
+  if (currentModel) {
+    el.innerHTML = 'Modelo: <span class="status-model">' + currentModel + '</span>';
+  } else {
+    el.innerHTML = 'Modelo: <span style="color:#aaa">pendiente</span>';
+  }
+}
+
+function addMsg(text, who) {
+  const box = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'msg ' + who;
+  const b = document.createElement('div');
+  b.className = 'bubble ' + who;
+  b.innerText = text;
+  row.appendChild(b);
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addTyping() {
+  const box = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'msg bot';
+  row.id = 'typing-row';
+  const b = document.createElement('div');
+  b.className = 'bubble typing';
+  b.innerText = 'Consultando manuales INVT...';
+  row.appendChild(b);
+  box.appendChild(row);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const detected = detectModel(text);
+  if (detected) {
+    currentModel = detected;
+    updateStatus();
+  }
+
+  addMsg(text, 'user');
+  addTyping();
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+
+  try {
+    const body = {
+      model: 'gpt-4o-mini',
+      instructions: INSTRUCTIONS,
+      tools: [{ type: 'file_search', vector_store_ids: [VECTOR_STORE_ID] }],
+      include: ['file_search_call.results']
+    };
+
+    if (lastResponseId) {
+      body.previous_response_id = lastResponseId;
+      body.input = text;
+    } else {
+      body.input = text;
+    }
+
+    const res = await fetch('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    document.getElementById('typing-row')?.remove();
+
+    if (data.id) lastResponseId = data.id;
+
+    let reply = 'No se pudo obtener respuesta.';
+    if (data.output) {
+      const msgBlock = data.output.find(o => o.type === 'message');
+      if (msgBlock && msgBlock.content && msgBlock.content.length > 0) {
+        reply = msgBlock.content[0].text || reply;
+        const detectedInReply = detectModel(reply);
+        if (detectedInReply && !currentModel) {
+          currentModel = detectedInReply;
+          updateStatus();
+        }
+      }
+    }
+    if (data.error) {
+      reply = 'Error: ' + data.error.message;
+      if (data.error.code === 'invalid_api_key') {
+        localStorage.removeItem('invt_api_key');
+        reply = 'API Key incorrecta. Recarga la pagina e introduce una clave valida.';
+      }
+    }
+    addMsg(reply, 'bot');
+  } catch(e) {
+    document.getElementById('typing-row')?.remove();
+    addMsg('Error de conexion con OpenAI.', 'bot');
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+document.getElementById('msgInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendMessage();
+});
+
+function quickSend(text) {
+  document.getElementById('msgInput').value = text;
+  sendMessage();
+}
+</script>
+</body>
+</html>
